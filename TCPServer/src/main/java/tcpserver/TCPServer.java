@@ -5,11 +5,16 @@
  */
 package tcpserver;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import lombok.SneakyThrows;
+import util.FileUtil;
 
 /**
  *
@@ -17,9 +22,48 @@ import java.net.Socket;
  */
 public class TCPServer {
     
-    public static void main(String[] args) throws Exception{
+    
+    @SneakyThrows
+    public static void main(String[] args) {
         
-        ServerSocket outFirstServerSocker= new ServerSocket(6789);
+       readAsByte();
+    }
+   
+    
+    @SneakyThrows
+    public static void readAsByte() {
+        
+         ServerSocket outFirstServerSocker= new ServerSocket(6789);
+        
+        while (true) {
+            System.out.println("Wait Client...");
+            Socket connection= outFirstServerSocker.accept();
+            System.out.println("Connected");
+           
+            DataInputStream dataStream=new DataInputStream(connection.getInputStream());
+            byte[] arry= readMessage(dataStream);
+            FileUtil.writeBytes(arry, "C:\\Users\\virtu\\OneDrive\\Masaüstü\\linux book\\elgiz.jpg");
+            
+            
+        }
+        
+    }
+    
+    
+      
+      @SneakyThrows
+      public static byte[] readMessage(DataInputStream din){
+          int msgLen=din.readInt();
+          byte[] msg=new byte[msgLen];
+          din.readFully(msg);
+          return msg;
+          
+      }
+    
+    
+    @SneakyThrows
+    public  static void readAsString(){
+         ServerSocket outFirstServerSocker= new ServerSocket(6789);
         
         while (true) {
             
@@ -35,6 +79,7 @@ public class TCPServer {
             
             System.out.println("message from client"+messageFromClient);
         }
-    }
     
+    
+}
 }
